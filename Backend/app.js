@@ -2,9 +2,11 @@ const dotenv = require('dotenv');
 dotenv.config();
 const express = require('express');
 const cors = require('cors');
+const cookieParser = require('cookie-parser');
 const app = express();
 const connectToDB = require('./db/db.js');
 const userRoutes = require('./routes/user.routes.js');
+const captainerRouters = require('./routes/captain.routes.js');
 
 // Connect to the database
 connectToDB();
@@ -13,6 +15,7 @@ connectToDB();
 app.use(cors()); // Allow cross-origin requests
 app.use(express.json()); // Parse incoming JSON requests
 app.use(express.urlencoded({ extended: true })); // Parse URL-encoded bodies
+app.use(cookieParser())
 
 // Define routes
 app.get('/', function(req, res) {
@@ -20,12 +23,8 @@ app.get('/', function(req, res) {
 });
 
 app.use('/users', userRoutes); // User routes are prefixed with '/users'
+app.use('/captains',captainerRouters)
 
-// Error handling middleware (optional, for catching all errors)
-app.use((err, req, res, next) => {
-    console.error(err.stack);
-    res.status(500).json({ message: 'Something went wrong!', error: err.message });
-});
 
 // Export the app
 module.exports = app;
