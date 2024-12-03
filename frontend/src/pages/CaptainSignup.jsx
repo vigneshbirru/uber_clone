@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
-
+import { Link } from 'react-router-dom' 
+import CaptainDataContext  from '../context/CaptainContext';
 const CaptainSignup = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -8,22 +8,40 @@ const CaptainSignup = () => {
   const [lastname, setlastname] = useState('')
   const [userData, setUserData] = useState({});
 
+  const [vehicleColor, setVehicleColor] = useState('')
+  const [vehiclePlate, setVehiclePlate] = useState('')
+  const [vehicleCapacity, setVehicleCapacity] = useState('')
+  const [vehicleType, setVehicleType] = useState('')
+
+  const { captain, setCaptain } = CaptainDataContext()
+
+
   const SubmitHandler = (e) => {
     e.preventDefault();
     // Add API call to authenticate user
     setUserData({
-      Fullname: {
+      fullname: {
         firstname: firstname,
         lastname: lastname,
       },
       email: email,
       password: password,
-
+      vehicle: {
+        color: vehicleColor,
+        plate: vehiclePlate,
+        capacity: vehicleCapacity,
+        vehicleType: vehicleType,
+      }
     })
     setEmail('');
     setPassword('');
     setfirstname('');
     setlastname('');
+    setVehicleColor('')
+    setVehiclePlate('')
+    setVehicleCapacity('')
+    setVehicleType('')
+
   }
 
   return (
@@ -69,9 +87,58 @@ const CaptainSignup = () => {
             }}
             className='bg-[#eeeeee] text-base placeholder:text-base mb-7 border w-full px-4 py-2 rounded ' placeholder='password' />
 
+          <h3 className='text-lg font-medium mb-2'>Vehicle Information</h3>
+      <div className='flex gap-4 mb-7'>
+        <input
+          required
+          className='bg-[#eeeeee] w-1/2 rounded-lg px-4 py-2 border text-lg placeholder:text-base'
+          type="text"
+          placeholder='Vehicle Color'
+          value={vehicleColor}
+          onChange={(e) => {
+            setVehicleColor(e.target.value)
+          }}
+        />
+        <input
+          required
+          className='bg-[#eeeeee] w-1/2 rounded-lg px-4 py-2 border text-lg placeholder:text-base'
+          type="text"
+          placeholder='Vehicle Plate'
+          value={vehiclePlate}
+          onChange={(e) => {
+            setVehiclePlate(e.target.value)
+          }}
+        />
+      </div>
+      <div className='flex gap-4 mb-7'>
+        <input
+          required
+          className='bg-[#eeeeee] w-1/2 rounded-lg px-4 py-2 border text-lg placeholder:text-base'
+          type="number"
+          placeholder='Vehicle Capacity'
+          value={vehicleCapacity}
+          onChange={(e) => {
+            setVehicleCapacity(e.target.value)
+          }}
+        />
+        <select
+          required
+          className='bg-[#eeeeee] w-1/2 rounded-lg px-4 py-2 border text-lg placeholder:text-base'
+          value={vehicleType}
+          onChange={(e) => {
+            setVehicleType(e.target.value)
+          }}
+        >
+          <option value="" disabled>Select Vehicle Type</option>
+          <option value="car">Car</option>
+          <option value="auto">Auto</option>
+          <option value="moto">Moto</option>
+        </select>
+      </div>
+
           <button
             className='bg-[#111] text-white font-semibold text-lg placeholder:text-base mb-3 border w-full px-4 py-2 rounded '
-          >Login</button>
+          >Create Captain Account</button>
           <p className='text-center'>Already have a account? <Link to='/captain-login' className='text-blue-600'>Login here</Link></p>
         </form>
       </div>
@@ -81,6 +148,9 @@ const CaptainSignup = () => {
           className='text-[13px] leading-tight'
         >This site is protected by reCAPTCHA and the <span className='underline'>Google Privacy Policy</span > and <span className='underline'>Terms of Service apply</span></p>
       </div>
+
+      
+
     </div>
   )
 }

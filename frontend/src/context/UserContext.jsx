@@ -1,22 +1,22 @@
-import React from 'react'
+import React, { createContext, useState } from 'react';
 
+// Create the context outside the component.
 export const UserDataContext = createContext();
-const UserContext = ({ children }) => {
 
-    const [user,setUser] = useState({
+const UserContext = ({ children }) => {
+    const [user, setUser] = useState({
         email: '',
-        Fullname:{
+        fullname: {
             firstname: '',
             lastname: ''
         }
-    })
+    });
 
     return (
-        <div>
-            <UserDataContext value={[user,setUser,Fullname]}> 
-                {children}
-            </UserDataContext>
-        </div>
-    )
-}
-export default UserContext
+        <UserDataContext.Provider value={{user, setUser}}>
+            {children}
+        </UserDataContext.Provider>
+    );
+};
+
+export default UserContext;
