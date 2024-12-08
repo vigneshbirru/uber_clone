@@ -9,6 +9,8 @@ import React, { useContext } from 'react';
 import { UserDataContext } from './context/UserContext'
 import UserProtectWrapper from './pages/UserProtectWrapper'
 import UserLogout from './pages/UserLogout.jsx'
+import CaptainHome from './pages/CaptainHome.jsx'
+import CaptainProtectWrapper from './pages/CaptainProtectWrapper.jsx'
 const App = () => {
   const ans = useContext(UserDataContext)
   return (
@@ -19,16 +21,23 @@ const App = () => {
         <Route path="/signup" element={<UserSignup />} />
         <Route path="/login-captain" element={<Captainlogin />} />
         <Route path="/signup-captain" element={<CaptainSignup />} />
-        <Route path="/home" element={
-          <UserProtectWrapper>
-            <Home />
-          </UserProtectWrapper>
+        <Route path="/home"
+          element={
+            <UserProtectWrapper>
+              <Home />
+            </UserProtectWrapper>
+          } />
+        <Route path='/user/logout'
+          element={
+            <UserProtectWrapper>
+              <UserLogout />
+            </UserProtectWrapper>
+          } />
+        <Route path='/captain-home' element={
+          <CaptainProtectWrapper>
+            <CaptainHome />
+          </CaptainProtectWrapper>
         } />
-        <Route path='/user/logout' element={
-          <UserProtectWrapper>
-          <UserLogout />
-        </UserProtectWrapper>}
-        /> 
       </Routes>
     </div>
   )

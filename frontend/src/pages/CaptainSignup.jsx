@@ -1,28 +1,33 @@
-import React, { useState } from 'react'
+import React, { useState,useContext } from 'react'
 import { Link } from 'react-router-dom' 
-import CaptainDataContext  from '../context/CaptainContext';
+import {CaptainDataContext}  from '../context/CaptainContext';
+import {useNavigate} from 'react-router-dom'
+import axios from 'axios';
+
 const CaptainSignup = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [firstname, setfirstname] = useState("")
-  const [lastname, setlastname] = useState('')
-  const [userData, setUserData] = useState({});
 
-  const [vehicleColor, setVehicleColor] = useState('')
-  const [vehiclePlate, setVehiclePlate] = useState('')
-  const [vehicleCapacity, setVehicleCapacity] = useState('')
-  const [vehicleType, setVehicleType] = useState('')
+  const navigate =useNavigate()
 
-  const { captain, setCaptain } = CaptainDataContext()
+  const [ email, setEmail ] = useState('')
+  const [ password, setPassword ] = useState('')
+  const [ firstName, setFirstName ] = useState('')
+  const [ lastName, setLastName ] = useState('')
+
+  const [ vehicleColor, setVehicleColor ] = useState('')
+  const [ vehiclePlate, setVehiclePlate ] = useState('')
+  const [ vehicleCapacity, setVehicleCapacity ] = useState('')
+  const [ vehicleType, setVehicleType ] = useState('')
+
+  const { captain, setCaptain } = useContext(CaptainDataContext)
 
 
-  const SubmitHandler = (e) => {
+  const SubmitHandler = async (e) => {
     e.preventDefault();
     // Add API call to authenticate user
-    setUserData({
+    const captainData = {
       fullname: {
-        firstname: firstname,
-        lastname: lastname,
+        firstname: firstName,
+        lastname: lastName,
       },
       email: email,
       password: password,
@@ -32,11 +37,33 @@ const CaptainSignup = () => {
         capacity: vehicleCapacity,
         vehicleType: vehicleType,
       }
-    })
-    setEmail('');
-    setPassword('');
-    setfirstname('');
-    setlastname('');
+    }
+
+    try {
+      console.log(import.meta.env.VITE_API_URL);
+      const response = await axios.post(`${import.meta.env.VITE_API_URL}/captains/register`, captainData);
+      if (response.status === 201) {
+        const data = response.data;
+        setCaptain(data.captain);
+        localStorage.setItem('token', data.token);
+        navigate('/captain-home');
+        // console.log("Captain data: ", data.captain);
+      }
+    } catch (error) {
+      if (!import.meta.env.VITE_API_URL) {
+        alert("VITE_BASE_URL is not defined. Check your .env file.");
+      } else if (error.response?.status === 404) {
+        alert("API endpoint not found. Check the backend URL and route.");
+      } else {
+        alert("An unexpected error occurred. Check console for details.");
+      }
+    }
+    
+    
+    setEmail('')
+    setFirstName('')
+    setLastName('')
+    setPassword('')
     setVehicleColor('')
     setVehiclePlate('')
     setVehicleCapacity('')
@@ -55,17 +82,17 @@ const CaptainSignup = () => {
           <h3 className='text-lg font-medium mb-2'>Enter your name</h3>
           <div className='flex gap-4  mb-3'>
             <input required type="text"
-              value={firstname}
+              value={firstName}
               onChange={(e) => {
-                setfirstname(e.target.value);
+                setFirstName(e.target.value)
               }}
               className='bg-[#eeeeee] text-base placeholder:text-sm mb-3 border w-1/2 px-4 py-2 rounded '
               placeholder='First name' />
 
             <input required type="text"
-              value={lastname}
+              value={lastName}
               onChange={(e) => {
-                setlastname(e.target.value);
+                setLastName(e.target.value)
               }}
               className='bg-[#eeeeee] text-base placeholder:text-sm mb-3 border  w-1/2 px-4 py-2 rounded '
               placeholder='Last name' />
@@ -139,7 +166,7 @@ const CaptainSignup = () => {
           <button
             className='bg-[#111] text-white font-semibold text-lg placeholder:text-base mb-3 border w-full px-4 py-2 rounded '
           >Create Captain Account</button>
-          <p className='text-center'>Already have a account? <Link to='/captain-login' className='text-blue-600'>Login here</Link></p>
+          <p className='text-center'>Already have a account? <Link to='/login-captain' className='text-blue-600'>Login here</Link></p>
         </form>
       </div>
 
